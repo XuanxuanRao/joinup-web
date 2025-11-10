@@ -1,0 +1,51 @@
+# 忽略编译生成目录
+unpackage/
+dist/
+build/
+*.log
+
+# 临时文件
+*.tmp
+*.swp
+*.bak
+.cache/
+
+# IDE 配置
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Mac 和 Windows 系统文件
+.DS_Store
+Thumbs.db
+
+# node_modules
+node_modules/
+
+# 环境变量文件
+.env
+.env.*
+!.env.example
+
+# 日志文件
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# 测试覆盖率
+coverage/
+*.lcov
+
+# 微信小程序平台编译产物
+project.private.config.json
+project.config.json
+
+# Vite 特有
+vite.config.js.timestamp-*
+
+# 其他
+*.pem
+.eslintcache
