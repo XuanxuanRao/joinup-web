@@ -196,7 +196,7 @@ const goDetail = (item) => {
     return
   }
   router.push({
-    path: '/pages/detail/detail',
+    path: '/detail',
     query: { item: JSON.stringify(item) }
   })
 }

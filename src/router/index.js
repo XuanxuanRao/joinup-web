@@ -45,16 +45,15 @@ const routes = [
     },
     props: (route) => ({ keyword: route.query.keyword })
   },
-  {
-    path: '/detail',
-    name: 'Detail',
-    component: Detail,
-    meta: {
-      requiresAuth: true,
-      title: '详情页'
-    },
-    props: (route) => ({ item: route.query.item })
-  },
+  {    
+    path: '/detail',    
+    name: 'Detail',    
+    component: Detail,    
+    meta: {      
+      requiresAuth: true,      
+      title: '详情页'    
+    },    
+    props: (route) => ({ item: route.query.item })  },
   {
     path: '/announcement',
     name: 'Announcement',
