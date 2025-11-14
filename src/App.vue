@@ -50,11 +50,23 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
 }
 
 #app {
   width: 100%;
+  max-width: 100%;
   height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* 确保所有页面内容都居中且有最大宽度限制 */
+.router-view {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* 为主要内容区域添加底部边距，避免被TabBar遮挡 */
