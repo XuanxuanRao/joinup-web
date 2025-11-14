@@ -1,0 +1,80 @@
+name: Build Validation
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-validation:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        echo "Installing dependencies..."
+        npm ci
+        
+    - name: Build project
+      run: |
+        echo "Building project..."
+        npm run build
+      env:
+        NODE_ENV: production
+        
+    - name: Verify build output
+      run: |
+        echo "Verifying build output..."
+        
+        # 检查构建目录是否存在
+        if [ -d "./dist" ]; then
+          echo "✅ Build directory exists"
+          ls -la ./dist
+          
+          # 检查构建目录是否为空
+          if [ -z "$(ls -A ./dist)" ]; then
+            echo "❌ Error: Build directory is empty!"
+            exit 1
+          else
+            echo "✅ Build directory contains files"
+            echo "📊 Build size: $(du -sh ./dist | awk '{print $1}')"
+          fi
+        elif [ -d "./build" ]; then
+          echo "✅ Build directory (build) exists"
+          ls -la ./build
+          
+          if [ -z "$(ls -A ./build)" ]; then
+            echo "❌ Error: Build directory is empty!"
+            exit 1
+          else
+            echo "✅ Build directory contains files"
+            echo "📊 Build size: $(du -sh ./build | awk '{print $1}')"
+          fi
+        else
+          echo "⚠️ Warning: No standard build directory found"
+          echo "Looking for common build directories..."
+          find . -type d \( -name "dist" -o -name "build" -o -name "out" \) -maxdepth 2
+        fi
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-output
+        path: |
+          ./dist
+          ./build
+          ./out
+        if-no-files-found: warn
