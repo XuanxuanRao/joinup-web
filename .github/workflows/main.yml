@@ -1,0 +1,27 @@
+name: Build frontend and deploy to server
+on:
+  push:
+    branches:
+      - release
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: npm install
+      run: npm install
+    - name: npm run build
+      run: npm run build
+    - name: Deploy
+      uses: cross-the-world/scp-pipeline@master
+      env:
+        WELCOME: "ssh scp ssh pipelines"
+        LASTSSH: "Doing something after copying"
+      with:
+        host: ${{ secrets.HOST }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        connect_timeout: 10s
+        local: './dist/*'
+        remote: /home/joinup/web
