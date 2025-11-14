@@ -1,27 +1,49 @@
 name: Build frontend and deploy to server
+
 on:
   push:
     branches:
       - release
       
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: npm install
-      run: npm install
-    - name: npm run build
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build project
       run: npm run build
-    - name: Deploy
-      uses: cross-the-world/scp-pipeline@master
-      env:
-        WELCOME: "ssh scp ssh pipelines"
-        LASTSSH: "Doing something after copying"
+      
+    - name: Deploy to server
+      uses: appleboy/scp-action@v0.1.5
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
-        pass: ${{ secrets.PASSWORD }}
-        connect_timeout: 10s
-        local: './dist/*'
-        remote: /home/joinup/web
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        source: "./dist/*"
+        target: "/home/joinup/web"
+        overwrite: true
+        strip_components: 1
+        
+    - name: Restart Nginx on server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        script: |
+          echo "Restarting Nginx service..."
+          service nginx restart
+          echo "Nginx restarted successfully"
